@@ -52,7 +52,7 @@ func LoadConfig() (*AppConfig, error) {
 		config.RateLimiter.Enabled = false
 	}
 
-	maxRequests := getEnvWithDefault("RATE_LIMITER_MAX_REQUESTS_PER_MIN", "10")
+	maxRequests := getEnvWithDefault("MAX_REQUESTS_PER_MIN", "10")
 	if parsed, err := strconv.Atoi(maxRequests); err == nil && parsed > 0 {
 		config.RateLimiter.MaxReqsPerMin = parsed
 	}
