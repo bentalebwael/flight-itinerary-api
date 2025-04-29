@@ -10,7 +10,7 @@ Core Features:
 - Comprehensive input validation and error handling
 
 Performance Features:
-- High-performance worker pool for concurrent processing
+- High-performance **worker pool** for concurrent processing
 - Configurable rate limiting for API protection
 - Optimized memory management
 
@@ -154,7 +154,7 @@ Space Complexity: O(n) for storing the graph
 
 ## Performance
 
-The application utilizes a configurable worker pool architecture that can easily handle 1 Million requests per minute. This is achieved through:
+The application utilizes a configurable worker pool architecture that can easily **handle 1 Million requests** per minute. This is achieved through:
 - Concurrent request processing using a fixed worker pool
 - Efficient memory management
 - Optimized request handling pipeline
@@ -193,7 +193,7 @@ The test suite covers:
 
 ## Load Testing
 
-The application includes built-in load testing capabilities using Vegeta, a versatile HTTP load testing tool. The load tests can be executed using the provided test suite in the `tests` directory.
+The application includes built-in load testing capabilities using **Vegeta, a versatile HTTP load testing tool**. The load tests can be executed using the provided test suite in the `tests` directory.
 
 ### Running Load Tests
 
