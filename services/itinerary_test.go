@@ -5,11 +5,18 @@ import (
 	"reflect"
 	"testing"
 
+	"flight-itinerary-api/config"
 	"flight-itinerary-api/models"
 )
 
 func TestReconstructItinerary(t *testing.T) {
-	service := NewItineraryService(5)
+	cfg := &config.AppConfig{
+		WorkerPool: config.WorkerPoolConfig{
+			WorkerCount: 5,
+		},
+	}
+
+	service := NewItineraryService(cfg)
 	defer service.Stop()
 
 	tests := []struct {

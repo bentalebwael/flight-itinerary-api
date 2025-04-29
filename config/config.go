@@ -13,11 +13,6 @@ type AppConfig struct {
 	WorkerPool  WorkerPoolConfig
 }
 
-// WorkerPoolConfig holds worker pool related configurations
-type WorkerPoolConfig struct {
-	WorkerCount int
-}
-
 // ServerConfig holds HTTP server related configurations
 type ServerConfig struct {
 	Port string
@@ -27,6 +22,11 @@ type ServerConfig struct {
 type RateLimiterConfig struct {
 	Enabled       bool
 	MaxReqsPerMin int
+}
+
+// WorkerPoolConfig holds worker pool related configurations
+type WorkerPoolConfig struct {
+	WorkerCount int
 }
 
 // LoadConfig loads application configurations from environment variables
@@ -40,11 +40,9 @@ func LoadConfig() (*AppConfig, error) {
 	}
 
 	// Configure worker pool
-	workerCount := getEnvWithDefault("WORKER_COUNT", "5")
+	workerCount := getEnvWithDefault("WORKER_COUNT", "500")
 	if parsed, err := strconv.Atoi(workerCount); err == nil && parsed > 0 {
 		config.WorkerPool.WorkerCount = parsed
-	} else {
-		config.WorkerPool.WorkerCount = 5 // default value
 	}
 
 	rateLimitStatus := getEnvWithDefault("RATE_LIMITER", "disabled")

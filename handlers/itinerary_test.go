@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"flight-itinerary-api/config"
 	"flight-itinerary-api/models"
 	"flight-itinerary-api/services"
 )
@@ -16,7 +17,12 @@ import (
 func TestProcessItinerary(t *testing.T) {
 	// Setup
 	e := echo.New()
-	service := services.NewItineraryService(5)
+	cfg := &config.AppConfig{
+		WorkerPool: config.WorkerPoolConfig{
+			WorkerCount: 5,
+		},
+	}
+	service := services.NewItineraryService(cfg)
 	defer service.Stop()
 	handler := NewItineraryHandler(service)
 

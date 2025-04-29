@@ -5,9 +5,10 @@ import (
 	"errors"
 	"sync"
 
-	"flight-itinerary-api/models"
-
 	"github.com/panjf2000/ants/v2"
+
+	"flight-itinerary-api/config"
+	"flight-itinerary-api/models"
 )
 
 // ItineraryService handles the business logic for processing flight tickets
@@ -16,12 +17,8 @@ type ItineraryService struct {
 }
 
 // NewItineraryService creates a new instance of ItineraryService
-func NewItineraryService(workerCount int) *ItineraryService {
-	if workerCount <= 0 {
-		workerCount = 1000 // default worker count
-	}
-
-	pool, _ := ants.NewPool(workerCount) // Ignoring error as we validate workerCount > 0
+func NewItineraryService(cfg *config.AppConfig) *ItineraryService {
+	pool, _ := ants.NewPool(cfg.WorkerPool.WorkerCount)
 	return &ItineraryService{
 		pool: pool,
 	}

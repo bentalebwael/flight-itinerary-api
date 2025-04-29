@@ -30,7 +30,7 @@ func main() {
 	e := echo.New()
 
 	// Initialize services with configured worker count
-	itineraryService := services.NewItineraryService(cfg.WorkerPool.WorkerCount)
+	itineraryService := services.NewItineraryService(cfg)
 
 	// Setup router
 	router := api.NewRouter(cfg, l, itineraryService)
