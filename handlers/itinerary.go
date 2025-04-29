@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"professional-me-takehome/models"
-	"professional-me-takehome/services"
+	"flight-itinerary-api/models"
+	"flight-itinerary-api/services"
 )
 
 // ItineraryHandler handles HTTP requests for flight itinerary operations

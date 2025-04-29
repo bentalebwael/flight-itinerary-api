@@ -3,7 +3,7 @@ package services
 import (
 	"errors"
 
-	"professional-me-takehome/models"
+	"flight-itinerary-api/models"
 )
 
 // ItineraryService handles the business logic for processing flight tickets

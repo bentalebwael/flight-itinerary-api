@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"professional-me-takehome/handlers"
-	"professional-me-takehome/services"
+	"flight-itinerary-api/handlers"
+	"flight-itinerary-api/services"
 )
 
 func main() {

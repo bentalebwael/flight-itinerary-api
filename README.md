@@ -26,7 +26,7 @@ A Go web application that reconstructs a complete flight itinerary from a sequen
 1. Clone the repository
 ```bash
 git clone <repository-url>
-cd professional-me-takehome
+cd flight-itinerary-api
 ```
 
 2. Install dependencies

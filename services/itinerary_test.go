@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"professional-me-takehome/models"
+	"flight-itinerary-api/models"
 )
 
 func TestReconstructItinerary(t *testing.T) {
