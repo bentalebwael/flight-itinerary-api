@@ -9,7 +9,10 @@ require (
 	github.com/tsenart/vegeta/v12 v12.12.0
 )
 
-require gonum.org/v1/gonum v0.16.0 // indirect
+require (
+	go.uber.org/multierr v1.10.0 // indirect
+	gonum.org/v1/gonum v0.16.0 // indirect
+)
 
 require (
 	github.com/influxdata/tdigest v0.0.1 // indirect
@@ -21,6 +24,7 @@ require (
 	github.com/rs/dnscache v0.0.0-20230804202142-fc85eb664529 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
+	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.12.0 // indirect
