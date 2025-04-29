@@ -10,6 +10,12 @@ import (
 type AppConfig struct {
 	Server      ServerConfig
 	RateLimiter RateLimiterConfig
+	WorkerPool  WorkerPoolConfig
+}
+
+// WorkerPoolConfig holds worker pool related configurations
+type WorkerPoolConfig struct {
+	WorkerCount int
 }
 
 // ServerConfig holds HTTP server related configurations
@@ -30,9 +36,18 @@ func LoadConfig() (*AppConfig, error) {
 			Port: getEnvWithDefault("SERVER_PORT", "8080"),
 		},
 		RateLimiter: RateLimiterConfig{},
+		WorkerPool:  WorkerPoolConfig{},
 	}
 
-	rateLimitStatus := getEnvWithDefault("RATE_LIMITER", "enabled")
+	// Configure worker pool
+	workerCount := getEnvWithDefault("WORKER_COUNT", "5")
+	if parsed, err := strconv.Atoi(workerCount); err == nil && parsed > 0 {
+		config.WorkerPool.WorkerCount = parsed
+	} else {
+		config.WorkerPool.WorkerCount = 5 // default value
+	}
+
+	rateLimitStatus := getEnvWithDefault("RATE_LIMITER", "disabled")
 	if rateLimitStatus == "enabled" {
 		config.RateLimiter.Enabled = true
 	} else {
@@ -63,6 +78,10 @@ func getEnvWithDefault(key, defaultValue string) string {
 func validateConfig(config *AppConfig) error {
 	if config.RateLimiter.Enabled && config.RateLimiter.MaxReqsPerMin == 0 {
 		return fmt.Errorf("rate limiter max requests must be greater than zero")
+	}
+
+	if config.WorkerPool.WorkerCount <= 0 {
+		return fmt.Errorf("worker count must be greater than zero")
 	}
 
 	return nil

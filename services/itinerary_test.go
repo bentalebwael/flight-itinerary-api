@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -8,7 +9,8 @@ import (
 )
 
 func TestReconstructItinerary(t *testing.T) {
-	service := NewItineraryService()
+	service := NewItineraryService(5)
+	defer service.Stop()
 
 	tests := []struct {
 		name    string
@@ -172,7 +174,7 @@ func TestReconstructItinerary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := service.ReconstructItinerary(tt.request)
+			got, err := service.ReconstructItinerary(context.Background(), tt.request)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReconstructItinerary() error = %v, wantErr %v", err, tt.wantErr)
 				return

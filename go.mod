@@ -10,6 +10,9 @@ require (
 )
 
 require (
+	github.com/gammazero/deque v0.2.0 // indirect
+	github.com/gammazero/workerpool v1.1.3 // indirect
+	github.com/panjf2000/ants/v2 v2.11.3 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	gonum.org/v1/gonum v0.16.0 // indirect
 )

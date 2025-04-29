@@ -1,21 +1,72 @@
 package services
 
 import (
+	"context"
 	"errors"
+	"sync"
 
 	"flight-itinerary-api/models"
+
+	"github.com/panjf2000/ants/v2"
 )
 
 // ItineraryService handles the business logic for processing flight tickets
-type ItineraryService struct{}
+type ItineraryService struct {
+	pool *ants.Pool
+}
 
 // NewItineraryService creates a new instance of ItineraryService
-func NewItineraryService() *ItineraryService {
-	return &ItineraryService{}
+func NewItineraryService(workerCount int) *ItineraryService {
+	if workerCount <= 0 {
+		workerCount = 1000 // default worker count
+	}
+
+	pool, _ := ants.NewPool(workerCount) // Ignoring error as we validate workerCount > 0
+	return &ItineraryService{
+		pool: pool,
+	}
+}
+
+// Stop gracefully shuts down all workers
+func (s *ItineraryService) Stop() {
+	s.pool.Release()
 }
 
 // ReconstructItinerary processes the flight tickets and returns an ordered itinerary
-func (s *ItineraryService) ReconstructItinerary(request *models.ItineraryRequest) ([]string, error) {
+func (s *ItineraryService) ReconstructItinerary(ctx context.Context, request *models.ItineraryRequest) ([]string, error) {
+	var (
+		result []string
+		err    error
+		wg     sync.WaitGroup
+	)
+
+	wg.Add(1)
+	submitErr := s.pool.Submit(func() {
+		defer wg.Done()
+		result, err = processItinerary(request)
+	})
+
+	if submitErr != nil {
+		return nil, submitErr
+	}
+
+	// Wait for completion or context cancellation
+	doneCh := make(chan struct{})
+	go func() {
+		wg.Wait()
+		close(doneCh)
+	}()
+
+	select {
+	case <-doneCh:
+		return result, err
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+}
+
+// processItinerary handles the actual itinerary reconstruction logic
+func processItinerary(request *models.ItineraryRequest) ([]string, error) {
 	// Build graph representation of flights
 	graph := make(map[string]string)
 	inDegree := make(map[string]int)

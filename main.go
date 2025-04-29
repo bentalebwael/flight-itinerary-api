@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
 
 	"flight-itinerary-api/api"
@@ -15,35 +14,39 @@ import (
 
 func main() {
 	// Initialize logger
+	l, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("Failed to intialize the logger: %v", err)
+	}
+	defer l.Sync()
 
 	// Load configuration
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatal("Failed to load configuration", zap.Error(err))
+		l.Fatal("Failed to load configuration", zap.Error(err))
 	}
 
 	// Initialize Echo
 	e := echo.New()
 
-	// Middleware
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(middleware.CORS())
-
-	// Initialize services
-	itineraryService := services.NewItineraryService()
+	// Initialize services with configured worker count
+	itineraryService := services.NewItineraryService(cfg.WorkerPool.WorkerCount)
 
 	// Setup router
-	router := api.NewRouter(cfg, itineraryService)
+	router := api.NewRouter(cfg, l, itineraryService)
 	router.SetupRoutes(e)
 
 	// Start server
-	log.Fatal(e.Start(fmt.Sprintf(":%s", cfg.Server.Port)))
+	err = e.Start(fmt.Sprintf(":%s", cfg.Server.Port))
+	l.Fatal("Error while running the server", zap.Error(err))
 
 	// Graceful shutdown
 	defer func() {
+		// Stop worker pool
+		itineraryService.Stop()
+
 		if err := e.Shutdown(nil); err != nil {
-			log.Fatal("Failed to shutdown server", zap.Error(err))
+			l.Fatal("Failed to shutdown server", zap.Error(err))
 		}
 	}()
 }

@@ -61,11 +61,4 @@ func printMetrics(metrics *vegeta.Metrics) {
 	fmt.Printf("  Max Throughput: %.2f requests/sec\n", metrics.Rate)
 	fmt.Printf("  Total Bytes Read: %d bytes\n", metrics.BytesIn.Total)
 	fmt.Printf("  Total Bytes Written: %d bytes\n\n", metrics.BytesOut.Total)
-
-	if len(metrics.Errors) > 0 {
-		fmt.Println("\nErrors:")
-		for _, err := range metrics.Errors {
-			fmt.Printf("  - %s\n", err)
-		}
-	}
 }

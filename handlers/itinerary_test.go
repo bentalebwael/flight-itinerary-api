@@ -16,7 +16,8 @@ import (
 func TestProcessItinerary(t *testing.T) {
 	// Setup
 	e := echo.New()
-	service := services.NewItineraryService()
+	service := services.NewItineraryService(5)
+	defer service.Stop()
 	handler := NewItineraryHandler(service)
 
 	tests := []struct {

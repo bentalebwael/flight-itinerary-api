@@ -39,8 +39,8 @@ func (h *ItineraryHandler) ProcessItinerary(c echo.Context) error {
 		})
 	}
 
-	// Process the itinerary
-	itinerary, err := h.service.ReconstructItinerary(&request)
+	// Process the itinerary with context
+	itinerary, err := h.service.ReconstructItinerary(c.Request().Context(), &request)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error": err.Error(),
