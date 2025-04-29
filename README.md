@@ -101,6 +101,37 @@ curl -X POST http://localhost:8080/api/itinerary \
 }'
 ```
 
+## Error Handling
+
+The API handles various error cases:
+- Invalid JSON format
+- Missing or malformed ticket data
+- Invalid airport codes (must be 3 characters)
+- Disconnected routes
+- Multiple starting points
+- Multiple flights from the same source
+
+## Configuration
+
+The application can be configured using environment variables:
+
+| Variable | Description | Default Value |
+|----------|-------------|---------------|
+| SERVER_PORT | Port number for the HTTP server | 8080 |
+| WORKER_COUNT | Number of workers in the pool | 500 |
+| RATE_LIMITER | Enable/disable rate limiting | disabled |
+| MAX_REQUESTS_PER_MIN | Maximum requests per minute per IP | 10 |
+
+Example configuration for high-performance setup:
+```bash
+export WORKER_COUNT=100
+export RATE_LIMITER=enabled
+export MAX_REQUESTS_PER_MIN=100
+```
+
+Note: The worker pool size can be adjusted based on your server's resources and expected load. The default configuration of 500 workers provides a good balance between performance and resource usage for most use cases.
+
+
 ## Algorithm
 
 The application uses a graph-based approach to reconstruct the itinerary:
@@ -112,16 +143,6 @@ The application uses a graph-based approach to reconstruct the itinerary:
 Time Complexity: O(n) where n is the number of tickets
 Space Complexity: O(n) for storing the graph
 
-## Error Handling
-
-The API handles various error cases:
-- Invalid JSON format
-- Missing or malformed ticket data
-- Invalid airport codes (must be 3 characters)
-- Disconnected routes
-- Multiple starting points
-- Multiple flights from the same source
-
 ## Development Choices
 
 - **Echo Framework**: Chosen for its simplicity, performance, and built-in middleware support
@@ -130,6 +151,13 @@ The API handles various error cases:
 - **Worker Pool**: Implements a highly efficient concurrent request handling system
 - **Load Testing**: Built-in load testing using Vegeta for performance validation
 - **Test Coverage**: Extensive unit testing covering all critical paths
+
+## Performance
+
+The application utilizes a configurable worker pool architecture that can easily handle 1 Million requests per minute. This is achieved through:
+- Concurrent request processing using a fixed worker pool
+- Efficient memory management
+- Optimized request handling pipeline
 
 ## Unit Testing
 
@@ -162,33 +190,6 @@ The test suite covers:
 - Middleware functionality
 - API response formats
 - Business logic correctness
-
-## Performance
-
-The application utilizes a configurable worker pool architecture that can easily handle 1 Million requests per minute. This is achieved through:
-- Concurrent request processing using a fixed worker pool
-- Efficient memory management
-- Optimized request handling pipeline
-
-## Configuration
-
-The application can be configured using environment variables:
-
-| Variable | Description | Default Value |
-|----------|-------------|---------------|
-| SERVER_PORT | Port number for the HTTP server | 8080 |
-| WORKER_COUNT | Number of workers in the pool | 500 |
-| RATE_LIMITER | Enable/disable rate limiting | disabled |
-| MAX_REQUESTS_PER_MIN | Maximum requests per minute per IP | 10 |
-
-Example configuration for high-performance setup:
-```bash
-export WORKER_COUNT=1000
-export RATE_LIMITER=enabled
-export MAX_REQUESTS_PER_MIN=100000
-```
-
-Note: The worker pool size can be adjusted based on your server's resources and expected load. The default configuration of 500 workers provides a good balance between performance and resource usage for most use cases.
 
 ## Load Testing
 
