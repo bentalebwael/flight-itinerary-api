@@ -17,16 +17,18 @@ type ItineraryService struct {
 }
 
 // NewItineraryService creates a new instance of ItineraryService
-func NewItineraryService(cfg *config.AppConfig) *ItineraryService {
+func NewItineraryService(ctx context.Context, cfg *config.AppConfig) *ItineraryService {
 	pool, _ := ants.NewPool(cfg.WorkerPool.WorkerCount)
+
+	// Start a goroutine to watch for context cancellation
+	go func() {
+		<-ctx.Done()
+		pool.Release()
+	}()
+
 	return &ItineraryService{
 		pool: pool,
 	}
-}
-
-// Stop gracefully shuts down all workers
-func (s *ItineraryService) Stop() {
-	s.pool.Release()
 }
 
 // ReconstructItinerary processes the flight tickets and returns an ordered itinerary

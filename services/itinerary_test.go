@@ -16,8 +16,9 @@ func TestReconstructItinerary(t *testing.T) {
 		},
 	}
 
-	service := NewItineraryService(cfg)
-	defer service.Stop()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	service := NewItineraryService(ctx, cfg)
 
 	tests := []struct {
 		name    string

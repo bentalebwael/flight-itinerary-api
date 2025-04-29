@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -22,8 +23,9 @@ func TestProcessItinerary(t *testing.T) {
 			WorkerCount: 5,
 		},
 	}
-	service := services.NewItineraryService(cfg)
-	defer service.Stop()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	service := services.NewItineraryService(ctx, cfg)
 	handler := NewItineraryHandler(service)
 
 	tests := []struct {
@@ -73,7 +75,7 @@ func TestProcessItinerary(t *testing.T) {
 			}
 
 			// Create request
-			req := httptest.NewRequest(http.MethodPost, "/itinerary", strings.NewReader(string(body)))
+			req := httptest.NewRequest(http.MethodPost, "/itinerary", strings.NewReader(string(body))).WithContext(context.Background())
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 			// Create response recorder

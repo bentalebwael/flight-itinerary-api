@@ -1,6 +1,8 @@
 package api
 
 import (
+	"context"
+
 	"github.com/labstack/echo/v4"
 	echomiddleware "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -19,9 +21,9 @@ type Router struct {
 }
 
 // NewRouter creates a new instance of Router
-func NewRouter(cfg *config.AppConfig, logger *zap.Logger, itineraryService *services.ItineraryService) *Router {
+func NewRouter(ctx context.Context, cfg *config.AppConfig, logger *zap.Logger, itineraryService *services.ItineraryService) *Router {
 	// Create rate limiter
-	rateLimiter := middleware.NewRateLimiterMiddleware(&cfg.RateLimiter)
+	rateLimiter := middleware.NewRateLimiterMiddleware(ctx, &cfg.RateLimiter)
 
 	return &Router{
 		logger:           logger,
